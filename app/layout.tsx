@@ -9,11 +9,7 @@ const geist = Geist({
   variable: "--font-geist",
 })
 
-export const metadata: Metadata = {
-  title: "Felix Macaspac - HubSpot CMS Developer",
-  description: "HubSpot CMS Developer from Philippines with 5 years of experience.",
-  generator: "v0.app",
-}
+
 
 export default function RootLayout({
   children,
