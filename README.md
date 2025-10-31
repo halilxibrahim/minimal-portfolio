@@ -1,6 +1,5 @@
 # Halil İbrahim Kamacı - Portfolio
 
-A clean, modern portfolio website showcasing my experience as a Software Developer specializing in React, React Native, and AI integration.
 
 ## ✨ Features
 
