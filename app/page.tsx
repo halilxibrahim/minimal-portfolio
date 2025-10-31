@@ -56,7 +56,9 @@ export default function Home() {
       <main className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-16">
         <header
           id="intro"
-          ref={(el) => (sectionsRef.current[0] = el)}
+          ref={(el) => {
+            sectionsRef.current[0] = el
+          }}
           className="min-h-screen flex items-center opacity-0"
         >
           <div className="grid lg:grid-cols-5 gap-12 sm:gap-16 w-full">
@@ -81,7 +83,7 @@ export default function Home() {
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 text-sm text-muted-foreground">
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    Available for work
+                    
                   </div>
                   <div>Ankara, Turkey</div>
                 </div>
@@ -92,16 +94,16 @@ export default function Home() {
               <div className="space-y-4">
                 <div className="text-sm text-muted-foreground font-mono">CURRENTLY</div>
                 <div className="space-y-2">
-                  <div className="text-foreground">React Native Developer</div>
+                  <div className="text-foreground">Software Developer</div>
                   <div className="text-muted-foreground">@ Byterise</div>
                   <div className="text-xs text-muted-foreground">May 2025 — Present</div>
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <div className="text-sm text-muted-foreground font-mono">FOCUS</div>
+              <div className="space-y-3">
+                <div className="text-sm text-muted-foreground font-mono">TECH STACK</div>
                 <div className="flex flex-wrap gap-2">
-                  {["React", "React Native", "TypeScript", "Next.js", "Node.js", "AI/LLM"].map((skill) => (
+                  {["JavaScript", "TypeScript", "React", "React Native", "Node.js", "Supabase", "AWS", "AI, GEN AI, MCP"].map((skill) => (
                     <span
                       key={skill}
                       className="px-3 py-1 text-xs border border-border rounded-full hover:border-muted-foreground/50 transition-colors duration-300"
@@ -117,7 +119,9 @@ export default function Home() {
 
         <section
           id="work"
-          ref={(el) => (sectionsRef.current[1] = el)}
+          ref={(el) => {
+            sectionsRef.current[1] = el
+          }}
           className="min-h-screen py-20 sm:py-32 opacity-0"
         >
           <div className="space-y-12 sm:space-y-16">
@@ -130,35 +134,35 @@ export default function Home() {
               {[
                 {
                   year: "2025",
-                  role: "React Native Developer",
+                  role: "Software Developer",
                   company: "Byterise",
                   description: "Building scalable mobile applications with React Native and modern mobile development practices.",
                   tech: ["React Native", "TypeScript", "Mobile"],
                 },
                 {
                   year: "2024-2025",
-                  role: "Frontend Developer",
+                  role: "Software Developer",
                   company: "Freelance",
                   description: "Delivered enterprise SaaS applications for CoDeriApp and Kam Software. Built drag-and-drop calendar scheduling, SEO-optimized landing pages, and real-time booking systems. Increased deployment speed by 30%.",
                   tech: ["Next.js", "React Native", "Tailwind CSS"],
                 },
                 {
                   year: "2023-2024",
-                  role: "Frontend Developer",
+                  role: "Software Developer",
                   company: "Arma Group Holding",
                   description: "Designed and launched bul.com.tr mail & cloud storage platform with web and mobile integration. Increased customer retention by 25% with responsive, pixel-perfect UI.",
                   tech: ["Next.js", "React Native", "Tailwind CSS"],
                 },
                 {
                   year: "2022-2023",
-                  role: "Frontend Developer",
+                  role: "Software Developer",
                   company: "Ekip.co",
                   description: "Developed real-time fintech trading dashboard with 98% uptime. Optimized data visualization improving processing speed by 50%.",
                   tech: ["Next.js", "Chart.js", "React Native"],
                 },
                 {
                   year: "2021-2022",
-                  role: "Frontend Developer",
+                  role: "Software Developer",
                   company: "Appcent",
                   description: "Built scalable e-commerce platforms for Fortune 500 clients including Beymen, Allianz, and Unilever. Reduced page load times by 40%.",
                   tech: ["React", "Next.js", "Tailwind CSS"],
@@ -200,7 +204,9 @@ export default function Home() {
 
         <section
           id="thoughts"
-          ref={(el) => (sectionsRef.current[2] = el)}
+          ref={(el) => {
+            sectionsRef.current[2] = el
+          }}
           className="min-h-screen py-20 sm:py-32 opacity-0"
         >
           <div className="space-y-12 sm:space-y-16">
@@ -272,14 +278,20 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="connect" ref={(el) => (sectionsRef.current[3] = el)} className="py-20 sm:py-32 opacity-0">
+        <section
+          id="connect"
+          ref={(el) => {
+            sectionsRef.current[3] = el
+          }}
+          className="py-20 sm:py-32 opacity-0"
+        >
           <div className="grid lg:grid-cols-2 gap-12 sm:gap-16">
             <div className="space-y-6 sm:space-y-8">
               <h2 className="text-3xl sm:text-4xl font-light">Let's Connect</h2>
 
               <div className="space-y-6">
                 <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
-                  Always interested in new opportunities, collaborations, and conversations about technology, AI, and autonomous systems.
+                  Always interested in new collaborations, and conversations about technology, AI, and autonomous systems.
                 </p>
 
                 <div className="space-y-4">
@@ -332,8 +344,7 @@ export default function Home() {
         <footer className="py-12 sm:py-16 border-t border-border">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 sm:gap-8">
             <div className="space-y-2">
-              <div className="text-sm text-muted-foreground">© 2025 Halil İbrahim Kamacı. All rights reserved.</div>
-              <div className="text-xs text-muted-foreground">Built with Next.js and Tailwind CSS</div>
+              <div className="text-sm text-muted-foreground">© 2026 Halil İbrahim Kamacı. All rights reserved.</div>
             </div>
 
             <div className="flex items-center gap-4">
