@@ -6,7 +6,13 @@ import { motion, useScroll, useSpring } from "framer-motion"
 import { Toaster, toast } from "react-hot-toast"
 
 export default function Home() {
-  const [isDark, setIsDark] = useState(true)
+  // Initialize theme based on system preference
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches
+    }
+    return true
+  })
   const [activeSection, setActiveSection] = useState("")
   const sectionsRef = useRef<(HTMLElement | null)[]>([])
   const { scrollYProgress } = useScroll()
@@ -18,6 +24,16 @@ export default function Home() {
 
   // Animated gradient background
   const [gradientCenter, setGradientCenter] = useState({ x: 50, y: 50 })
+
+  // Listen to system theme changes
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+    const handleChange = (e: MediaQueryListEvent) => {
+      setIsDark(e.matches)
+    }
+    mediaQuery.addEventListener("change", handleChange)
+    return () => mediaQuery.removeEventListener("change", handleChange)
+  }, [])
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDark)
@@ -82,9 +98,9 @@ export default function Home() {
 
       {/* Animated gradient background */}
       <div
-        className="fixed inset-0 opacity-30 pointer-events-none"
+        className="fixed inset-0 opacity-40 pointer-events-none"
         style={{
-          background: `radial-gradient(circle at ${gradientCenter.x}% ${gradientCenter.y}%, rgba(99, 102, 241, 0.15), transparent 50%)`,
+          background: `radial-gradient(circle 500px at ${gradientCenter.x}% ${gradientCenter.y}%, rgba(132, 134, 231, 0.3), rgba(85, 136, 247, 0.2) 40%, transparent 70%)`,
           transition: "background 0.3s ease",
         }}
       />
@@ -94,6 +110,40 @@ export default function Home() {
         className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 origin-left z-50"
         style={{ scaleX }}
       />
+
+      {/* Theme Toggle - Fixed in top right */}
+      <motion.button
+        onClick={toggleTheme}
+        className="fixed top-8 right-8 z-50 group p-3 rounded-xl border border-border/50 hover:border-border transition-all duration-300 backdrop-blur-md bg-background/80 shadow-lg"
+        aria-label="Toggle theme"
+        whileHover={{ scale: 1.1, rotate: 180 }}
+        whileTap={{ scale: 0.9 }}
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+      >
+        {isDark ? (
+          <svg
+            className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors duration-300"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fillRule="evenodd"
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+              clipRule="evenodd"
+            />
+          </svg>
+        ) : (
+          <svg
+            className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors duration-300"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+          </svg>
+        )}
+      </motion.button>
 
       {/* Side navigation */}
       <nav className="fixed left-8 top-1/2 -translate-y-1/2 z-10 hidden lg:block">
@@ -332,6 +382,271 @@ export default function Home() {
           </motion.div>
         </section>
 
+        {/* Projects Section - Bento Grid */}
+        <section className="py-20 sm:py-32">
+          <motion.div
+            className="space-y-12 sm:space-y-16"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+              <motion.h2
+                className="text-3xl sm:text-4xl font-light"
+                initial={{ x: -50, opacity: 0 }}
+                whileInView={{ x: 0, opacity: 1 }}
+                viewport={{ once: true }}
+              >
+                Featured Projects
+              </motion.h2>
+              <div className="text-sm text-muted-foreground font-mono">RECENT WORK</div>
+            </div>
+
+            {/* Bento Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {/* Large Card - Spans 2 columns */}
+              <motion.div
+                className="md:col-span-2 lg:col-span-2 lg:row-span-2 group relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-blue-500/5 to-purple-500/5 backdrop-blur-sm p-8 cursor-pointer"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative z-10 h-full flex flex-col justify-between">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                      <span className="text-xs text-muted-foreground font-mono">LIVE</span>
+                    </div>
+                    <h3 className="text-2xl sm:text-3xl font-semibold group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-500 group-hover:to-purple-600 group-hover:bg-clip-text transition-all duration-300">
+                      AI-Powered Mobile App
+                    </h3>
+                    <p className="text-muted-foreground leading-relaxed max-w-lg">
+                      Revolutionary mobile application integrating Claude AI with React Native. Features real-time AI
+                      conversations, voice input, and intelligent context management.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2 mt-6">
+                    {["React Native", "Claude AI", "MCP", "TypeScript"].map((tech) => (
+                      <span
+                        key={tech}
+                        className="px-3 py-1 text-xs bg-background/50 border border-border rounded-full text-muted-foreground group-hover:border-muted-foreground/50 transition-colors"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Medium Card */}
+              <motion.div
+                className="lg:row-span-1 group relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-purple-500/5 to-pink-500/5 backdrop-blur-sm p-6 cursor-pointer"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+                whileHover={{ scale: 1.05, rotate: 1 }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative z-10 space-y-4">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 10V3L4 14h7v7l9-11h-7z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-semibold group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-500 group-hover:to-pink-600 group-hover:bg-clip-text transition-all duration-300">
+                    SaaS Dashboard
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Enterprise-grade analytics dashboard with real-time data visualization and custom reporting.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {["Next.js", "Tailwind"].map((tech) => (
+                      <span key={tech} className="text-xs text-muted-foreground">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Small Card */}
+              <motion.div
+                className="group relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-green-500/5 to-blue-500/5 backdrop-blur-sm p-6 cursor-pointer"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                whileHover={{ scale: 1.05, rotate: -1 }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative z-10 space-y-4">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-500 to-blue-500 flex items-center justify-center">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-semibold group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-green-500 group-hover:to-blue-600 group-hover:bg-clip-text transition-all duration-300">
+                    E-Commerce App
+                  </h3>
+                  <p className="text-sm text-muted-foreground">Mobile shopping experience with seamless payments.</p>
+                  <div className="text-xs text-muted-foreground">React Native</div>
+                </div>
+              </motion.div>
+
+              {/* Medium Card - Tall */}
+              <motion.div
+                className="md:col-span-1 group relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-orange-500/5 to-red-500/5 backdrop-blur-sm p-6 cursor-pointer"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+                whileHover={{ scale: 1.05 }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-red-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative z-10 space-y-4">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-semibold group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-orange-500 group-hover:to-red-600 group-hover:bg-clip-text transition-all duration-300">
+                    Trading Platform
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Real-time fintech dashboard with advanced charting and portfolio management.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {["Next.js", "Chart.js", "WebSocket"].map((tech) => (
+                      <span key={tech} className="text-xs text-muted-foreground">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Wide Card */}
+              <motion.div
+                className="md:col-span-2 group relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-cyan-500/5 to-blue-500/5 backdrop-blur-sm p-6 cursor-pointer"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.4 }}
+                whileHover={{ scale: 1.02 }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative z-10 flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between">
+                  <div className="space-y-3 flex-1">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center">
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"
+                        />
+                      </svg>
+                    </div>
+                    <h3 className="text-xl font-semibold group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-cyan-500 group-hover:to-blue-600 group-hover:bg-clip-text transition-all duration-300">
+                      Cloud Storage Platform
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Secure file management system with email integration and cross-platform sync.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {["Next.js", "Supabase", "AWS"].map((tech) => (
+                      <span
+                        key={tech}
+                        className="px-3 py-1 text-xs bg-background/50 border border-border rounded-full text-muted-foreground group-hover:border-muted-foreground/50 transition-colors"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Small Card */}
+              <motion.div
+                className="group relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-pink-500/5 to-purple-500/5 backdrop-blur-sm p-6 cursor-pointer"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.5 }}
+                whileHover={{ scale: 1.05, rotate: 2 }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative z-10 space-y-4">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-semibold group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-pink-500 group-hover:to-purple-600 group-hover:bg-clip-text transition-all duration-300">
+                    Booking System
+                  </h3>
+                  <p className="text-sm text-muted-foreground">Drag-and-drop calendar with real-time availability.</p>
+                  <div className="text-xs text-muted-foreground">React + Node.js</div>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* View All Projects CTA */}
+            <motion.div
+              className="flex justify-center pt-8"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <motion.button
+                className="group px-8 py-4 rounded-2xl border border-border hover:border-muted-foreground/50 transition-all duration-300 backdrop-blur-sm bg-background/30 relative overflow-hidden"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative z-10 flex items-center gap-3">
+                  <span className="font-medium">View All Projects</span>
+                  <motion.svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ repeat: Infinity, duration: 1.5 }}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </motion.svg>
+                </div>
+              </motion.button>
+            </motion.div>
+          </motion.div>
+        </section>
+
         {/* Thoughts Section */}
         <section
           id="thoughts"
@@ -547,36 +862,6 @@ export default function Home() {
             </div>
 
             <div className="flex items-center gap-4">
-              <motion.button
-                onClick={toggleTheme}
-                className="group p-3 rounded-lg border border-border hover:border-muted-foreground/50 transition-all duration-300 backdrop-blur-sm bg-background/50"
-                aria-label="Toggle theme"
-                whileHover={{ scale: 1.1, rotate: 180 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                {isDark ? (
-                  <svg
-                    className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors duration-300"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors duration-300"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-                  </svg>
-                )}
-              </motion.button>
-
               <motion.button
                 className="group p-3 rounded-lg border border-border hover:border-muted-foreground/50 transition-all duration-300 backdrop-blur-sm bg-background/50"
                 whileHover={{ scale: 1.1 }}
